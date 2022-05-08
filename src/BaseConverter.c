@@ -9,7 +9,7 @@
 #include <inttypes.h>
 #include <stdio.h>
 
-#define VALUE_MAX 10 * sizeof(uint32_t)
+#define VALUE_MAX 41 * sizeof(uint8_t)
 
 const uint32_t zero = 0;
 uint32_t ra, sp, gp, tp, fp;
@@ -17,13 +17,15 @@ uint32_t t0, t1, t2, t3, t4, t5, t6;
 uint32_t s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11;
 uint32_t a0, a1, a2, a3, a4, a5, a6, a7;
 
-char value[VALUE_MAX];
+uint8_t* pa1;
 
-char basePrompt[] =
+uint8_t value[VALUE_MAX];
+
+uint8_t basePrompt[] =
     "Please enter the base of the number you are using (0 to exit): ";
-char valuePrompt[] = "Please enter the value: ";
-char resultPrompt[] = "The given value in base 10 is: ";
-char badValPrompt[] = "The value entered is not valid for the base entered";
+uint8_t valuePrompt[] = "Please enter the value: ";
+uint8_t resultPrompt[] = "The given value in base 10 is: ";
+uint8_t badValPrompt[] = "The value entered is not valid for the base entered";
 
 /**
  * @brief Gets the base from the user and returns it. Performs bounds checking
@@ -77,6 +79,9 @@ int main() {
     a1 = 69420;
     printResult();
 
+    pa1 = &value;
+    printf("Length of input: %" SCNd32 "\n", a0);
+
     return 0;
 }
 
@@ -116,6 +121,31 @@ void getValue() {
  * output:
  *      none
  */
-void printResult() {
-    printf("%s%" SCNd32 "\n", resultPrompt, a1);
+void printResult() { printf("%s%" SCNd32 "\n", resultPrompt, a1); }
+
+void translateValue() {}
+
+/**
+ * input:
+ *      a1 - the address of a string
+ * output:
+ *      a0 - the length of the string
+ */
+void strlen() {
+    uint32_t savet0 = t0;
+    uint32_t savet1 = t1;
+
+    t0 = 0;
+    t1 = '\0';
+
+    while (t0 < VALUE_MAX / sizeof(uint8_t)) {
+        if (*(pa1 + t0 * sizeof(uint8_t)) == t1) {
+            break;
+        }
+    }
+
+    a0 = t0;
+
+    t0 = savet0;
+    t1 = savet1;
 }
