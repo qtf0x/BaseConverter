@@ -9,17 +9,21 @@
 #include <inttypes.h>
 #include <stdio.h>
 
+#define VALUE_MAX 10 * sizeof(uint32_t)
+
 const uint32_t zero = 0;
 uint32_t ra, sp, gp, tp, fp;
 uint32_t t0, t1, t2, t3, t4, t5, t6;
 uint32_t s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11;
 uint32_t a0, a1, a2, a3, a4, a5, a6, a7;
 
-char* basePrompt =
+char value[VALUE_MAX];
+
+char basePrompt[] =
     "Please enter the base of the number you are using (0 to exit): ";
-char* valuePrompt = "Please enter the value: ";
-char* resultPrompt = "The given value in base 10 is: ";
-char* badValPrompt = "The value entered is not valid for the base entered";
+char valuePrompt[] = "Please enter the value: ";
+char resultPrompt[] = "The given value in base 10 is: ";
+char badValPrompt[] = "The value entered is not valid for the base entered";
 
 /**
  * @brief Gets the base from the user and returns it. Performs bounds checking
@@ -64,14 +68,20 @@ void translateFromASCII();
 int main() {
     getBase();
 
-    printf("Base chosen: %d", a0);
+    if (a0 == 0) {
+        return 0;
+    }
+
+    getValue();
 
     return 0;
 }
 
 /**
- * input: none
- * output: a0
+ * input:
+ *      none
+ * output:
+ *      a0 - base chosem
  */
 void getBase() {
     uint32_t savet0 = t0;
@@ -84,4 +94,15 @@ void getBase() {
 
     a0 = t0;
     t0 = savet0;
+}
+
+/**
+ * input:
+ *      none
+ * output:
+ *      none
+ */
+void getValue() {
+    printf("%s", valuePrompt);
+    scanf("%s", value);
 }
