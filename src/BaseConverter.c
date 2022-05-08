@@ -74,6 +74,9 @@ int main() {
 
     getValue();
 
+    a1 = 69420;
+    printResult();
+
     return 0;
 }
 
@@ -105,4 +108,14 @@ void getBase() {
 void getValue() {
     printf("%s", valuePrompt);
     scanf("%s", value);
+}
+
+/**
+ * input:
+ *      a1 - value after translation
+ * output:
+ *      none
+ */
+void printResult() {
+    printf("%s%" SCNd32 "\n", resultPrompt, a1);
 }
