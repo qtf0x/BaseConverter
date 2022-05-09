@@ -103,6 +103,26 @@ int main() {
     pow();
     printf("0^1 = %" SCNd32 "\n", a0);
 
+    a1 = 51;
+    translateFromASCII();
+    printf("51 -> %" SCNd32 "\n", a0);
+
+    a1 = 48;
+    translateFromASCII();
+    printf("48 -> %" SCNd32 "\n", a0);
+
+    a1 = 57;
+    translateFromASCII();
+    printf("57 -> %" SCNd32 "\n", a0);
+
+    a1 = 12;
+    translateFromASCII();
+    printf("12 -> %" SCNd32 "\n", a0);
+
+    a1 = 90;
+    translateFromASCII();
+    printf("90 -> %" SCNd32 "\n", a0);
+
     return 0;
 }
 
@@ -114,15 +134,23 @@ int main() {
  */
 void getBase() {
     uint32_t savet0 = t0;
-    t0 = -1;
+    uint32_t savet1 = t1;
+    uint32_t savet2 = t2;
 
-    while (t0 != 0 && (t0 < 2 || t0 > 36)) {
+    t0 = -1;
+    t1 = 2;
+    t2 = 36;
+
+    while (t0 != 0 && (t0 < t1 || t0 > t2)) {
         printf("%s", basePrompt);
         scanf("%" SCNd32, &t0);
     }
 
     a0 = t0;
+
     t0 = savet0;
+    t1 = savet1;
+    t2 = savet2;
 }
 
 /**
@@ -155,11 +183,13 @@ void translateValue() {}
 void strlen() {
     uint32_t savet0 = t0;
     uint32_t savet1 = t1;
+    uint32_t savet2 = t2;
 
     t0 = 0;
     t1 = '\0';
+    t2 = VALUE_MAX / sizeof(uint8_t);
 
-    while (t0 < VALUE_MAX / sizeof(uint8_t)) {
+    while (t0 < t2) {
         if (*(pa1 + t0 * sizeof(uint8_t)) == t1) {
             break;
         }
@@ -171,6 +201,7 @@ void strlen() {
 
     t0 = savet0;
     t1 = savet1;
+    t2 = savet2;
 }
 
 /**
@@ -183,15 +214,16 @@ void strlen() {
 void pow() {
     uint32_t savet0 = t0;
     uint32_t savet1 = t1;
-
-    t0 = 0;
+    uint32_t savet2 = t2;
 
     if (a2 <= 0) {
         t1 = 1;
     } else {
+        t0 = 0;
         t1 = a1;
+        t2 = a2 - 1;
 
-        while (t0 < a2 - 1) {
+        while (t0 < t2) {
             t1 *= a1;
 
             ++t0;
@@ -202,4 +234,32 @@ void pow() {
 
     t0 = savet0;
     t1 = savet1;
+    t2 = savet2;
+}
+
+/**
+ * input:
+ *      a1 - ASCII code
+ * output:
+ *      a0 - translated number or negative if error
+ */
+void translateFromASCII() {
+    uint32_t savet0 = t0;
+    uint32_t savet1 = t1;
+    uint32_t savet2 = t2;
+
+    t1 = 48;
+    t2 = 57;
+
+    if (a1 < t1 || a1 > t2) {
+        t0 = -1;
+    } else {
+        t0 = a1 - t1;
+    }
+
+    a0 = t0;
+
+    t0 = savet0;
+    t1 = savet1;
+    t2 = savet2;
 }
