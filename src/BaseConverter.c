@@ -25,7 +25,7 @@ uint8_t basePrompt[] =
     "Please enter the base of the number you are using (0 to exit): ";
 uint8_t valuePrompt[] = "Please enter the value: ";
 uint8_t resultPrompt[] = "The given value in base 10 is: ";
-uint8_t badValPrompt[] = "The value entered is not valid for the base entered";
+uint8_t errorPrompt[] = "The value entered is not valid for the base entered";
 
 /**
  * @brief Gets the base from the user and returns it. Performs bounds checking
@@ -48,7 +48,7 @@ void printResult();
  * base 10. If an error does not occur in translation, return the value. If an
  * error does occur in translation, return an error flag.
  */
-void translateResult();
+void translateValue();
 
 /**
  * @brief Given the address of a string, return the length of the string.
@@ -68,62 +68,28 @@ void pow();
 void translateFromASCII();
 
 int main() {
-    getBase();
+    while (1) {
+        getBase();
 
-    if (a0 == 0) {
-        return 0;
+        if (a0 == 0) {
+            return 0;
+        }
+
+        s0 = a0; // base
+
+        getValue();
+
+        a2 = s0;
+        translateValue();
+        s1 = a0; // result
+
+        if (a1) {
+            printf("%s\n\n", errorPrompt);
+        } else {
+            a1 = s1;
+            printResult();
+        }
     }
-
-    getValue();
-
-    a1 = 69420;
-    printResult();
-
-    pa1 = &value;
-    strlen();
-    printf("Length of input: %" SCNd32 "\n", a0);
-
-    a1 = 7;
-    a2 = 9;
-    pow();
-    printf("7^9 = %" SCNd32 "\n", a0);
-
-    a1 = 3;
-    a2 = 1;
-    pow();
-    printf("3^1 = %" SCNd32 "\n", a0);
-
-    a1 = 9;
-    a2 = 0;
-    pow();
-    printf("9^0 = %" SCNd32 "\n", a0);
-
-    a1 = 0;
-    a2 = 1;
-    pow();
-    printf("0^1 = %" SCNd32 "\n", a0);
-
-    a1 = 51;
-    translateFromASCII();
-    printf("51 -> %" SCNd32 "\n", a0);
-
-    a1 = 48;
-    translateFromASCII();
-    printf("48 -> %" SCNd32 "\n", a0);
-
-    a1 = 57;
-    translateFromASCII();
-    printf("57 -> %" SCNd32 "\n", a0);
-
-    a1 = 12;
-    translateFromASCII();
-    printf("12 -> %" SCNd32 "\n", a0);
-
-    a1 = 90;
-    translateFromASCII();
-    printf("90 -> %" SCNd32 "\n", a0);
-
-    return 0;
 }
 
 /**
@@ -170,13 +136,62 @@ void getValue() {
  * output:
  *      none
  */
-void printResult() { printf("%s%" SCNd32 "\n", resultPrompt, a1); }
-
-void translateValue() {}
+void printResult() { printf("%s%" SCNd32 "\n\n", resultPrompt, a1); }
 
 /**
  * input:
- *      a1 - the address of a string
+ *      a2 - base to convert from
+ * output:
+ *      a0 - translated value
+ *      a1 - error flag (1 for error)
+ */
+void translateValue() {
+    t0 = 1;   // loop var
+    t1 = '-'; // 45
+    t2 = 0;   // result
+
+    pa1 = &value;
+    strlen();
+    t4 = a0; // characters to check
+
+    while (t0 <= t4) {
+        t4 -= t0;
+
+        t5 = value[t4];
+
+        if (t5 == t1 && t4 == 0) {
+            t2 *= -1;
+            break;
+        }
+
+        a1 = t5;
+        translateFromASCII();
+        t3 = a0;
+
+        if (t3 < 0 || t3 >= a2) {
+            a1 = 1;
+            return;
+        }
+
+        t6 = a2;     // save a2
+        a1 = a2;     // base
+        a2 = t0 - 1; // power
+        pow();
+        a2 = t6; // restore a2
+
+        t6 = t3 * a0;
+        t2 += t6;
+
+        ++t0;
+    }
+
+    a0 = t2;
+    a1 = 0;
+}
+
+/**
+ * input:
+ *      pa1 - the address of a string
  * output:
  *      a0 - the length of the string
  */
@@ -184,13 +199,15 @@ void strlen() {
     uint32_t savet0 = t0;
     uint32_t savet1 = t1;
     uint32_t savet2 = t2;
+    uint32_t savet3 = t3;
 
     t0 = 0;
     t1 = '\0';
     t2 = VALUE_MAX / sizeof(uint8_t);
 
     while (t0 < t2) {
-        if (*(pa1 + t0 * sizeof(uint8_t)) == t1) {
+        t3 = t0 * sizeof(uint8_t);
+        if (*(pa1 + t3) == t1) {
             break;
         }
 
@@ -202,6 +219,7 @@ void strlen() {
     t0 = savet0;
     t1 = savet1;
     t2 = savet2;
+    t3 = savet3;
 }
 
 /**
@@ -247,14 +265,26 @@ void translateFromASCII() {
     uint32_t savet0 = t0;
     uint32_t savet1 = t1;
     uint32_t savet2 = t2;
+    uint32_t savet3 = t3;
+    uint32_t savet4 = t4;
+    uint32_t savet5 = t5;
+    uint32_t savet6 = t6;
 
     t1 = 48;
     t2 = 57;
+    t3 = 65;
+    t4 = 90;
+    t5 = 97;
+    t6 = 122;
 
-    if (a1 < t1 || a1 > t2) {
-        t0 = -1;
-    } else {
+    if (a1 >= t1 && a1 <= t2) {
         t0 = a1 - t1;
+    } else if (a1 >= t3 && a1 <= t4) {
+        t0 = a1 - t3 + 10;
+    } else if (a1 >= t5 && a1 <= t6) {
+        t0 = a1 - t5 + 10;
+    } else {
+        t0 = -1;
     }
 
     a0 = t0;
@@ -262,4 +292,8 @@ void translateFromASCII() {
     t0 = savet0;
     t1 = savet1;
     t2 = savet2;
+    t3 = savet3;
+    t4 = savet4;
+    t5 = savet5;
+    t6 = savet6;
 }
