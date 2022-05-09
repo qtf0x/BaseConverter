@@ -80,7 +80,28 @@ int main() {
     printResult();
 
     pa1 = &value;
+    strlen();
     printf("Length of input: %" SCNd32 "\n", a0);
+
+    a1 = 7;
+    a2 = 9;
+    pow();
+    printf("7^9 = %" SCNd32 "\n", a0);
+
+    a1 = 3;
+    a2 = 1;
+    pow();
+    printf("3^1 = %" SCNd32 "\n", a0);
+
+    a1 = 9;
+    a2 = 0;
+    pow();
+    printf("9^0 = %" SCNd32 "\n", a0);
+
+    a1 = 0;
+    a2 = 1;
+    pow();
+    printf("0^1 = %" SCNd32 "\n", a0);
 
     return 0;
 }
@@ -142,9 +163,42 @@ void strlen() {
         if (*(pa1 + t0 * sizeof(uint8_t)) == t1) {
             break;
         }
+
+        ++t0;
     }
 
     a0 = t0;
+
+    t0 = savet0;
+    t1 = savet1;
+}
+
+/**
+ * input:
+ *      a1 - base
+ *      a2 - power
+ * output:
+ *      a0 - result
+ */
+void pow() {
+    uint32_t savet0 = t0;
+    uint32_t savet1 = t1;
+
+    t0 = 0;
+
+    if (a2 <= 0) {
+        t1 = 1;
+    } else {
+        t1 = a1;
+
+        while (t0 < a2 - 1) {
+            t1 *= a1;
+
+            ++t0;
+        }
+    }
+
+    a0 = t1;
 
     t0 = savet0;
     t1 = savet1;
