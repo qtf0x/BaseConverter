@@ -81,12 +81,11 @@ int main() {
 
         a2 = s0;
         translateValue();
-        s1 = a0; // result
 
         if (a1) {
             printf("%s\n\n", errorPrompt);
         } else {
-            a1 = s1;
+            a1 = a0;
             printResult();
         }
     }
@@ -96,7 +95,7 @@ int main() {
  * input:
  *      none
  * output:
- *      a0 - base chosem
+ *      a0 - base chosen
  */
 void getBase() {
     uint32_t savet0 = t0;
@@ -152,13 +151,14 @@ void translateValue() {
 
     pa1 = &value;
     strlen();
-    t4 = a0; // characters to check
+    s3 = a0; // characters to check
+    t4 = a0;
 
-    while (t0 <= t4) {
-        t4 -= t0;
+    while (t0 <= s3) {
+        t4 = s3 - t0;
+        t5 = value[t4]; // char to translate
 
-        t5 = value[t4];
-
+        // if negative sign in front
         if (t5 == t1 && t4 == 0) {
             t2 *= -1;
             break;
@@ -166,7 +166,7 @@ void translateValue() {
 
         a1 = t5;
         translateFromASCII();
-        t3 = a0;
+        t3 = a0; // translated value
 
         if (t3 < 0 || t3 >= a2) {
             a1 = 1;
